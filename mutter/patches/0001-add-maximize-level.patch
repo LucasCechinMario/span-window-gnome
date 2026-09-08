@@ -1,5 +1,5 @@
---- a/src/core/window-private.h	2026-09-06 15:43:26.000000000 -0300
-+++ b/src/core/window-private.h	2026-09-06 17:54:23.135368781 -0300
+--- a/src/core/window-private.h
++++ b/src/core/window-private.h
 @@ -249,6 +249,15 @@
  
    MetaWindowType type;
@@ -16,8 +16,8 @@
    /* NOTE these five are not in UTF-8, we just treat them as random
     * binary data
     */
---- a/src/core/window.c	2026-09-06 15:43:26.000000000 -0300
-+++ b/src/core/window.c	2026-09-06 18:14:45.202924332 -0300
+--- a/src/core/window.c
++++ b/src/core/window.c
 @@ -1435,6 +1435,7 @@
    meta_window_config_set_is_fullscreen (window->config, FALSE);
    window->require_fully_onscreen = TRUE;
@@ -65,20 +65,22 @@
  
    was_maximized_horizontally =
      meta_window_config_is_maximized_horizontally (window->config);
---- a/src/core/constraints.c	2026-04-14 10:37:46.000000000 -0300
-+++ b/src/core/constraints.c	2026-09-06 18:06:43.143932084 -0300
-@@ -1328,6 +1328,11 @@
-     {
-       meta_window_get_tile_area (window, tile_mode, &target_size);
-     }
-+  else if (meta_window_is_maximized (window) &&
-+           window->maximize_level >= 2)
+--- a/src/core/constraints.c
++++ b/src/core/constraints.c
+@@ -1324,7 +1324,12 @@
+   /* Calculate target_size = maximized size of (window + frame) */
+   tile_mode = meta_window_config_get_tile_mode (window->config);
+   if (meta_window_is_maximized (window) &&
+-      tile_mode == META_TILE_MAXIMIZED)
++      window->maximize_level >= 2)
 +    {
 +      meta_window_get_work_area_all_monitors (window, &target_size);
 +    }
-   else if (meta_window_is_maximized (window))
++  else if (meta_window_is_maximized (window) &&
++           tile_mode == META_TILE_MAXIMIZED)
      {
-       target_size = info->work_area_monitor;
+       meta_window_get_tile_area (window, tile_mode, &target_size);
+     }
 @@ -1860,6 +1865,7 @@
     */
    if (window->type == META_WINDOW_DESKTOP ||
@@ -87,8 +89,8 @@
        meta_monitor_manager_get_num_logical_monitors (monitor_manager) == 1 ||
        !window->require_on_single_monitor ||
        client_driven_interactive_move ||
---- a/src/core/meta-private-introspected.h	2026-09-06 15:43:26.000000000 -0300
-+++ b/src/core/meta-private-introspected.h	2026-09-06 17:57:37.809063108 -0300
+--- a/src/core/meta-private-introspected.h
++++ b/src/core/meta-private-introspected.h
 @@ -25,3 +25,12 @@
                                    MetaWindowConstraint  left,
                                    MetaWindowConstraint  right,
@@ -102,8 +104,8 @@
 +META_EXPORT
 +guint
 +meta_window_get_maximize_level (MetaWindow *window);
---- a/debian/libmutter-18-0.symbols	2026-05-28 10:00:08.000000000 -0300
-+++ b/debian/libmutter-18-0.symbols	2026-09-06 18:10:07.341635703 -0300
+--- a/debian/libmutter-18-0.symbols
++++ b/debian/libmutter-18-0.symbols
 @@ -922,6 +922,8 @@
   meta_window_move_resize_frame@Base 43.0
   meta_window_move_to_monitor@Base 43.0

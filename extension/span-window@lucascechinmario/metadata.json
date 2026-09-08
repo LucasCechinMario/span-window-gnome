@@ -2,6 +2,6 @@
   "uuid": "span-window@lucascechinmario",
   "name": "Span Window Across Monitors",
   "description": "Expande a janela ativa através de todos os monitores",
-  "version": 1,
+  "version": 2,
   "shell-version": ["50"]
 }
