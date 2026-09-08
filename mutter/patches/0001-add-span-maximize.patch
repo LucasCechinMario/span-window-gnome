@@ -1,0 +1,103 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lucas Cechin Mario <lucascechinmario@users.noreply.github.com>
+Date: Sun, 6 Sep 2026 15:50:00 -0300
+Subject: [PATCH] Add explicit maximize spanning all monitors
+
+Add a per-window span_maximize state that allows the GNOME Shell
+extension to request maximization using the combined work area of
+all logical monitors.
+
+The normal maximize behavior remains unchanged.
+
+---
+--- a/src/core/window-private.h	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/window-private.h	2026-09-06 15:44:54.167603698 -0300
+@@ -249,6 +249,10 @@
+ 
+   MetaWindowType type;
+ 
++  /* True when this window was explicitly requested to maximize
++   * across all monitors. */
++  guint span_maximize : 1;
++
+   /* NOTE these five are not in UTF-8, we just treat them as random
+    * binary data
+    */
+--- a/src/core/window.c	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/window.c	2026-09-06 15:40:02.534466394 -0300
+@@ -1435,6 +1435,7 @@
+   meta_window_config_set_is_fullscreen (window->config, FALSE);
+   window->require_fully_onscreen = TRUE;
+   window->require_on_single_monitor = TRUE;
++  window->span_maximize = FALSE;
+   window->require_titlebar_visible = TRUE;
+   window->on_all_workspaces = FALSE;
+   window->on_all_workspaces_requested = FALSE;
+@@ -3474,6 +3475,13 @@
+   meta_window_frame_size_changed (window);
+ }
+ 
++void
++meta_window_set_span_maximize (MetaWindow *window,
++                               gboolean    enabled)
++{
++  window->span_maximize = enabled;
++}
++
+ static void
+ update_edge_constraints (MetaWindow *window)
+ {
+@@ -3749,6 +3757,10 @@
+   if ((unmaximize_horizontally && was_maximized_horizontally) ||
+       (unmaximize_vertically && was_maximized_vertically))
+     {
++      /* Leaving maximized state also leaves span-maximize mode. */
++      if (unmaximize_horizontally && unmaximize_vertically)
++        window->span_maximize = FALSE;
++
+       MtkRectangle desired_rect;
+       gboolean has_desired_rect = FALSE;
+       MtkRectangle target_rect;
+--- a/src/core/constraints.c	2026-04-14 10:37:46.000000000 -0300
++++ b/src/core/constraints.c	2026-09-06 15:40:08.753709543 -0300
+@@ -1328,6 +1328,11 @@
+     {
+       meta_window_get_tile_area (window, tile_mode, &target_size);
+     }
++  else if (meta_window_is_maximized (window) &&
++           window->span_maximize)
++    {
++      meta_window_get_work_area_all_monitors (window, &target_size);
++    }
+   else if (meta_window_is_maximized (window))
+     {
+       target_size = info->work_area_monitor;
+@@ -1860,6 +1865,7 @@
+    */
+   if (window->type == META_WINDOW_DESKTOP ||
+       window->type == META_WINDOW_DOCK ||
++      window->span_maximize ||
+       meta_monitor_manager_get_num_logical_monitors (monitor_manager) == 1 ||
+       !window->require_on_single_monitor ||
+       client_driven_interactive_move ||
+--- a/src/core/meta-private-introspected.h	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/meta-private-introspected.h	2026-09-06 15:41:52.322785880 -0300
+@@ -25,3 +25,8 @@
+                                   MetaWindowConstraint  left,
+                                   MetaWindowConstraint  right,
+                                   MetaWindowConstraint  bottom);
++
++META_EXPORT
++void
++meta_window_set_span_maximize (MetaWindow *window,
++                               gboolean    enabled);
+--- a/debian/libmutter-18-0.symbols	2026-05-28 10:00:08.000000000 -0300
++++ b/debian/libmutter-18-0.symbols	2026-09-06 15:42:46.654257818 -0300
+@@ -922,6 +922,7 @@
+  meta_window_move_resize_frame@Base 43.0
+  meta_window_move_to_monitor@Base 43.0
+  meta_window_override_constraints@Base 44~rc-1ubuntu2
++ meta_window_set_span_maximize@Base 50.1-0ubuntu2.2
+  meta_window_protocol_to_stage_rect@Base 47.0
+  meta_window_raise@Base 43.0
+  meta_window_raise_and_make_recent_on_workspace@Base 46.0

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+
+  <schema
+      id="org.gnome.shell.extensions.span-window"
+      path="/org/gnome/shell/extensions/span-window/">
+
+    <key name="span-window-maximize"
+         type="as">
+      <default>["&lt;Super&gt;Up"]</default>
+      <summary>Avançar nível de maximização</summary>
+      <description>
+        Avança o nível de maximização da janela.
+      </description>
+    </key>
+
+    <key name="span-window-unmaximize"
+         type="as">
+      <default>["&lt;Super&gt;Down"]</default>
+      <summary>Retroceder nível de maximização</summary>
+      <description>
+        Retrocede o nível de maximização da janela.
+      </description>
+    </key>
+
+  </schema>
+
+</schemalist>

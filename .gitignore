@@ -1,50 +1,57 @@
-# Prerequisites
-*.d
+# ============================================================
+# Span Window - Git Ignore
+# ============================================================
 
-# Compiled Object files
-*.slo
-*.lo
+# ------------------------------------------------------------
+# C / C++ build artifacts
+# ------------------------------------------------------------
+
+*.d
 *.o
 *.obj
+*.lo
+*.slo
 
-# Precompiled Headers
+*.a
+*.la
+*.lai
+*.lib
+
+*.so
+*.so.*
+*.dylib
+*.dll
+
 *.gch
 *.pch
 
-# Linker files
+# Debug / linker
 *.ilk
-
-# Debugger Files
 *.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+*.dwo
 
 # Executables
 *.exe
 *.out
 *.app
 
+
+# ------------------------------------------------------------
 # Build directories
+# ------------------------------------------------------------
+
 build/
 Build/
 build-*/
+_build/
+debian/.debhelper/
+debian/tmp/
 
-# CMake generated files
+
+# ------------------------------------------------------------
+# CMake
+# ------------------------------------------------------------
+
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -52,18 +59,56 @@ Makefile
 install_manifest.txt
 compile_commands.json
 
+
+# ------------------------------------------------------------
+# GNOME / GLib generated files
+# ------------------------------------------------------------
+
+# Compiled GSettings schema
+gschemas.compiled
+
+
+# ------------------------------------------------------------
 # Temporary files
+# ------------------------------------------------------------
+
 *.tmp
 *.log
 *.bak
 *.swp
+*.swo
+*~
 
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
 .cache/
+
+
+# ------------------------------------------------------------
+# Test output
+# ------------------------------------------------------------
+
+Testing/
+
+
+# ------------------------------------------------------------
+# Editors / IDEs
+# ------------------------------------------------------------
+
+.vscode/
+.idea/
+
+
+# ------------------------------------------------------------
+# Python
+# ------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+
+# ------------------------------------------------------------
+# vcpkg
+# ------------------------------------------------------------
+
+vcpkg_installed/

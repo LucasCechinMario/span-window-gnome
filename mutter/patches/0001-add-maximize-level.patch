@@ -1,0 +1,115 @@
+--- a/src/core/window-private.h	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/window-private.h	2026-09-06 17:54:23.135368781 -0300
+@@ -249,6 +249,15 @@
+ 
+   MetaWindowType type;
+ 
++  /* Explicit maximize mode requested by the GNOME Shell extension.
++  *
++  * 0 = normal window
++  * 1 = maximize on current monitor
++  * 2 = maximize across all monitors
++  * 3 = fullscreen across all monitors
++  */
++  guint maximize_level : 2;
++
+   /* NOTE these five are not in UTF-8, we just treat them as random
+    * binary data
+    */
+--- a/src/core/window.c	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/window.c	2026-09-06 18:14:45.202924332 -0300
+@@ -1435,6 +1435,7 @@
+   meta_window_config_set_is_fullscreen (window->config, FALSE);
+   window->require_fully_onscreen = TRUE;
+   window->require_on_single_monitor = TRUE;
++  window->maximize_level = 0;
+   window->require_titlebar_visible = TRUE;
+   window->on_all_workspaces = FALSE;
+   window->on_all_workspaces_requested = FALSE;
+@@ -3474,6 +3475,26 @@
+   meta_window_frame_size_changed (window);
+ }
+ 
++void
++meta_window_set_maximize_level (MetaWindow *window,
++                                guint       level)
++{
++  g_return_if_fail (META_IS_WINDOW (window));
++
++  if (level > 3)
++    level = 3;
++
++  window->maximize_level = level;
++}
++
++guint
++meta_window_get_maximize_level (MetaWindow *window)
++{
++  g_return_val_if_fail (META_IS_WINDOW (window), 0);
++
++  return window->maximize_level;
++}
++
+ static void
+ update_edge_constraints (MetaWindow *window)
+ {
+@@ -3736,7 +3757,10 @@
+   g_assert (unmaximize_horizontally || unmaximize_vertically);
+ 
+   if (unmaximize_horizontally && unmaximize_vertically)
+-    window->saved_maximize = FALSE;
++    {
++      window->saved_maximize = FALSE;
++      window->maximize_level = 0;
++    }
+ 
+   was_maximized_horizontally =
+     meta_window_config_is_maximized_horizontally (window->config);
+--- a/src/core/constraints.c	2026-04-14 10:37:46.000000000 -0300
++++ b/src/core/constraints.c	2026-09-06 18:06:43.143932084 -0300
+@@ -1328,6 +1328,11 @@
+     {
+       meta_window_get_tile_area (window, tile_mode, &target_size);
+     }
++  else if (meta_window_is_maximized (window) &&
++           window->maximize_level >= 2)
++    {
++      meta_window_get_work_area_all_monitors (window, &target_size);
++    }
+   else if (meta_window_is_maximized (window))
+     {
+       target_size = info->work_area_monitor;
+@@ -1860,6 +1865,7 @@
+    */
+   if (window->type == META_WINDOW_DESKTOP ||
+       window->type == META_WINDOW_DOCK ||
++      window->maximize_level >= 2 ||
+       meta_monitor_manager_get_num_logical_monitors (monitor_manager) == 1 ||
+       !window->require_on_single_monitor ||
+       client_driven_interactive_move ||
+--- a/src/core/meta-private-introspected.h	2026-09-06 15:43:26.000000000 -0300
++++ b/src/core/meta-private-introspected.h	2026-09-06 17:57:37.809063108 -0300
+@@ -25,3 +25,12 @@
+                                   MetaWindowConstraint  left,
+                                   MetaWindowConstraint  right,
+                                   MetaWindowConstraint  bottom);
++
++META_EXPORT
++void
++meta_window_set_maximize_level (MetaWindow *window,
++                                guint       level);
++
++META_EXPORT
++guint
++meta_window_get_maximize_level (MetaWindow *window);
+--- a/debian/libmutter-18-0.symbols	2026-05-28 10:00:08.000000000 -0300
++++ b/debian/libmutter-18-0.symbols	2026-09-06 18:10:07.341635703 -0300
+@@ -922,6 +922,8 @@
+  meta_window_move_resize_frame@Base 43.0
+  meta_window_move_to_monitor@Base 43.0
+  meta_window_override_constraints@Base 44~rc-1ubuntu2
++ meta_window_set_maximize_level@Base 50.1-0ubuntu2.2
++ meta_window_get_maximize_level@Base 50.1-0ubuntu2.2
+  meta_window_protocol_to_stage_rect@Base 47.0
+  meta_window_raise@Base 43.0
+  meta_window_raise_and_make_recent_on_workspace@Base 46.0
