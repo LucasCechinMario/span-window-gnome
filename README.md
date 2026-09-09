@@ -432,10 +432,10 @@ A implementação atual possui:
 
 ## 🛠️ Desenvolvimento
 
-Para reconstruir o Mutter modificado:
+Para reconstruir o Mutter modificado, forneça uma árvore limpa do código-fonte do Mutter 50.1:
 
 ```bash
-./scripts/build-mutter.sh
+./scripts/build-mutter.sh /caminho/mutter-50.1
 ```
 
 Os patches utilizados estão disponíveis em:
