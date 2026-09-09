@@ -322,15 +322,13 @@ span-window-gnome/
 ├── mutter/
 │   └── patches/
 │       ├── 0001-add-maximize-level.patch
-│       └── 0001-add-span-maximize.patch
+│       └── 0002-add-fullscreen-all-monitors.patch
 │
 ├── packages/
 │   └── ubuntu-26.04/
 │       └── amd64/
 │           ├── gir1.2-mutter-18_*.deb
 │           ├── libmutter-18-0_*.deb
-│           ├── mutter-common-bin_*.deb
-│           ├── mutter-common_*.deb
 │           └── mutter_*.deb
 │
 ├── scripts/
@@ -496,4 +494,4 @@ Se você encontrar um problema, abra uma **Issue** descrevendo:
 
 Se o Span Window for útil para você, considere deixar uma ⭐ no repositório.
 
-Isso ajuda o projeto a ganhar visibilidade e incentiva o desenvolvimento de novas funcionalidades.s
+Isso ajuda o projeto a ganhar visibilidade e incentiva o desenvolvimento de novas funcionalidades.
