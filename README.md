@@ -320,9 +320,14 @@ span-window-gnome/
 │           └── org.gnome.shell.extensions.span-window.gschema.xml
 │
 ├── mutter/
-│   └── patches/
-│       ├── 0001-add-maximize-level.patch
-│       └── 0002-add-fullscreen-all-monitors.patch
+│   ├── patches/
+│   │   ├── 0001-add-maximize-level.patch
+│   │   └── 0002-add-fullscreen-all-monitors.patch
+│   │
+│   └── source/
+│       ├── mutter_50.1-0ubuntu2.2.dsc
+│       ├── mutter_50.1.orig.tar.xz
+│       └── mutter_50.1-0ubuntu2.2.debian.tar.xz
 │
 ├── packages/
 │   └── ubuntu-26.04/
@@ -346,7 +351,7 @@ span-window-gnome/
 
 ## 🧩 Patches do Mutter
 
-Os patches estão disponíveis em:
+Os patches específicos do Span Window estão disponíveis em:
 
 ```text
 mutter/patches/
@@ -360,9 +365,56 @@ Eles adicionam ao Mutter o suporte necessário para:
 - impedir que as restrições normais de monitor reduzam a janela;
 - permitir fullscreen através de todos os monitores.
 
+### Código-fonte correspondente
+
+Os pacotes modificados do Mutter incluídos neste projeto são baseados
+no source package oficial do Mutter:
+
+```text
+50.1-0ubuntu2.2
+```
+
+Os arquivos exatos do source package utilizado para reconstrução estão
+disponíveis em:
+
+```text
+mutter/source/
+```
+
+Eles fornecem a base original sobre a qual os patches do Span Window
+são aplicados.
+
+Em resumo:
+
+```text
+Mutter 50.1-0ubuntu2.2
+        │
+        ▼
+    patches/
+        │
+        ▼
+Mutter modificado
+        │
+        ▼
+      .deb
+```
+
+Essa separação permite analisar, reconstruir e verificar as alterações
+realizadas no Mutter de forma independente dos pacotes binários.
+
 ---
 
 ## ⚠️ Observações importantes
+
+### Aviso
+
+Este projeto não é afiliado, endossado ou oficialmente associado ao
+GNOME Project, GNOME Foundation ou Canonical Ltd.
+
+GNOME, GNOME Shell, Mutter e Ubuntu são projetos e marcas de seus
+respectivos proprietários.
+
+---
 
 ### Atualizações do Mutter
 
@@ -432,7 +484,9 @@ A implementação atual possui:
 
 ## 🛠️ Desenvolvimento
 
-Para reconstruir o Mutter modificado, forneça uma árvore limpa do código-fonte do Mutter 50.1:
+Para reconstruir o Mutter modificado, forneça uma árvore limpa do
+source package do Mutter `50.1-0ubuntu2.2`:
+
 
 ```bash
 ./scripts/build-mutter.sh /caminho/mutter-50.1
@@ -444,7 +498,14 @@ Os patches utilizados estão disponíveis em:
 mutter/patches/
 ```
 
-O projeto mantém os patches separados para facilitar a análise, manutenção e aplicação sobre o código-fonte correspondente do Mutter.
+O projeto mantém os patches separados para facilitar a análise,
+manutenção e aplicação sobre o código-fonte correspondente do Mutter.
+
+O source package utilizado como base está disponível em:
+
+```text
+mutter/source/
+```
 
 ---
 

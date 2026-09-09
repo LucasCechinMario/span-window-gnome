@@ -106,12 +106,13 @@ if ! grep -q "^mutter (" "$SOURCE_DIR/debian/changelog"; then
     exit 1
 fi
 
-if ! grep -q "50.1" "$SOURCE_DIR/debian/changelog"; then
-    echo "[ERRO] O source informado não parece ser Mutter 50.1."
+if ! grep -q "^mutter (${MUTTER_VERSION}" "$SOURCE_DIR/debian/changelog"; then
+    echo "[ERRO] O source informado não corresponde à versão esperada:"
+    echo "       Mutter $MUTTER_VERSION"
     exit 1
 fi
 
-echo "[OK] Source Mutter 50.1 confirmado."
+echo "[OK] Source Mutter $MUTTER_VERSION confirmado."
 echo
 
 # ------------------------------------------------------------
