@@ -1,15 +1,13 @@
-import Gio from 'gi://Gio';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-export default class SpanWindowExtension {
+export default class SpanWindowExtension extends Extension {
     enable() {
         log("SPAN WINDOW V2: extensão iniciada");
 
-        this._settings = new Gio.Settings({
-            schema_id: 'org.gnome.shell.extensions.span-window',
-        });
+        this._settings = this.getSettings();
 
         this._maximizeAction = 'span-window-maximize';
 

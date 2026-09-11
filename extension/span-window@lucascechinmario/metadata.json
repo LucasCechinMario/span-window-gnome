@@ -3,5 +3,6 @@
   "name": "Span Window Across Monitors",
   "description": "Expande a janela ativa através de todos os monitores",
   "version": 2,
-  "shell-version": ["50"]
+  "shell-version": ["50"],
+  "settings-schema": "org.gnome.shell.extensions.span-window"
 }
