@@ -511,6 +511,8 @@ glib-compile-schemas "$INSTALLED_SCHEMA_DIR"
 
 info "Schema compilado."
 
+export GSETTINGS_SCHEMA_DIR="$INSTALLED_SCHEMA_DIR"
+
 # ==============================================================
 # CONFIGURAÇÃO EXPLÍCITA DOS ATALHOS
 # ==============================================================
